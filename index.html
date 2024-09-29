@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RPG Style Store with Cart Button</title>
+  <style>
+    /* General body styling */
+    body {
+      background-color: #111;
+      color: #eee;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Container for the store */
+    .store-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      padding: 50px;
+    }
+
+    /* Styling individual item cards */
+    .item-card {
+      background: #222;
+      border: 2px solid #444;
+      border-radius: 15px;
+      width: 200px;
+      margin: 15px;
+      padding: 20px;
+      box-shadow: 0px 8px 25px rgba(0, 0, 0, 0.5);
+      transition: transform 0.4s ease-in-out, box-shadow 0.4s ease-in-out;
+      opacity: 0;
+      animation: fadeIn 1s forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* Hover effect for item cards */
+    .item-card:hover {
+      transform: translateY(-15px) rotate(-2deg);
+      box-shadow: 0px 12px 35px rgba(0, 0, 0, 0.9);
+    }
+
+    /* Item icon */
+    .item-card img {
+      width: 100px;
+      height: 100px;
+      display: block;
+      margin: 0 auto;
+      transition: transform 0.4s;
+    }
+
+    .item-card:hover img {
+      transform: scale(1.1);
+    }
+
+    /* Item name and price styling */
+    .item-name {
+      font-size: 1.2em;
+      text-align: center;
+      margin: 10px 0;
+      color: #FFD700; /* Gold color for RPG feel */
+      text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
+      transition: color 0.3s;
+    }
+
+    .item-name:hover {
+      color: #FFF;
+    }
+
+    .item-price {
+      text-align: center;
+      color: #87CEEB;
+      font-size: 1.1em;
+    }
+
+    /* Purchase button */
+    .buy-btn {
+      background-color: #28a745;
+      color: white;
+      text-align: center;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      font-size: 1em;
+      cursor: pointer;
+      width: 100%;
+      transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
+    }
+
+    .buy-btn:hover {
+      background-color: #218838;
+      transform: scale(1.05);
+      box-shadow: 0px 4px 20px rgba(40, 167, 69, 0.7);
+    }
+
+    /* Cart Popout */
+    #cart {
+      position: fixed;
+      top: 10%;
+      right: -400px;
+      width: 300px;
+      height: 400px;
+      background-color: #333;
+      border: 3px solid #FFD700;
+      border-radius: 10px;
+      box-shadow: 0 0 25px rgba(255, 215, 0, 0.7);
+      padding: 20px;
+      z-index: 999;
+      transition: right 0.7s ease-in-out, box-shadow 0.5s;
+    }
+
+    /* Cart header */
+    #cart h2 {
+      color: #FFD700;
+      text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.9);
+      text-align: center;
+      font-size: 1.5em;
+    }
+
+    /* Receipt container */
+    .receipt {
+      background-color: #222;
+      padding: 10px;
+      border-radius: 5px;
+      margin-bottom: 15px;
+      color: white;
+      box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.7);
+    }
+
+    /* Cart buttons */
+    .cart-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+    }
+
+    /* Copy and download buttons */
+    .copy-btn, .download-btn {
+      background-color: #FFD700;
+      color: black;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .copy-btn:hover, .download-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0px 4px 15px rgba(255, 215, 0, 0.8);
+    }
+
+    /* Show cart animation */
+    .show-cart {
+      right: 20px;
+      box-shadow: 0 0 50px rgba(255, 215, 0, 0.9);
+    }
+
+    /* Cart button styling */
+    .cart-btn {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background-color: #FFD700;
+      color: black;
+      padding: 15px 30px;
+      border: none;
+      border-radius: 10px;
+      font-size: 1.2em;
+      cursor: pointer;
+      box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.6);
+      transition: transform 0.4s, box-shadow 0.4s;
+      z-index: 1000;
+    }
+
+    .cart-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0px 12px 30px rgba(255, 215, 0, 0.8);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Store Container -->
+  <div class="store-container">
+
+    <!-- New items for Kraken+ Rank -->
+    
+    <div class="item-card">
+      <img src="https://i.ibb.co/WvY4Sqz/kraken-removebg-preview.png" alt="Kraken+ Rank Icon">
+      <div class="item-name">Kraken+ Rank (30 Days)</div>
+      <div class="item-price">Price: 50,000 Crystals</div>
+      <button class="buy-btn" onclick="addToCart('Kraken+ Rank (30 Days)', 50000)">Add to Cart</button>
+    </div>
+
+    <div class="item-card">
+      <img src="https://i.ibb.co/WvY4Sqz/kraken-removebg-preview.png" alt="Kraken+ Rank Icon">
+      <div class="item-name">Kraken+ Rank (Lifetime)</div>
+      <div class="item-price">Price: 100,000 Crystals</div>
+      <button class="buy-btn" onclick="addToCart('Kraken+ Rank (Lifetime)', 100000)">Add to Cart</button>
+    </div>
+
+
+    <div class="item-card">
+      <img src="https://i.ibb.co/CVzSWTP/c801a8263603dd6636009beae13b63ae-removebg-preview.png" alt="Demigod Rank Icon">
+      <div class="item-name">Demigod Rank</div>
+      <div class="item-price">Price: 45,000 Crystals</div>
+      <button class="buy-btn" onclick="addToCart('Demigod Rank', 45000)">Add to Cart</button>
+    </div>
+
+    <div class="item-card">
+      <img src="https://i.ibb.co/xFSqmfr/image-removebg-preview-2.png" alt="Warlord Rank Icon">
+      <div class="item-name">Warlord Rank</div>
+      <div class="item-price">Price: 35,000 Crystals</div>
+      <button class="buy-btn" onclick="addToCart('Warlord Rank', 35000)">Add to Cart</button>
+    </div>
+
+    <div class="item-card">
+      <img src="https://i.ibb.co/j8Q1Dbv/gladiator.png" alt="Gladiator Rank Icon">
+      <div class="item-name">Gladiator Rank</div>
+      <div class="item-price">Price: 25,000 Crystals</div>
+      <button class="buy-btn" onclick="addToCart('Gladiator Rank', 25000)">Add to Cart</button>
+    </div>
+
+    <!-- New Vault Items -->
+    <div class="item-card">
+      <img src="https://i.ibb.co/68Px8vf/image-removebg-preview.png" alt="S.OT.W Vault Icon">
+      <div class="item-name">S.OT.W Vault</div>
+      <div class="item-price">Price: 7,500 Crystals</div>
+      <button class="buy-btn" onclick="addToCart('S.OT.W Vault', 7500)">Add to Cart</button>
+    </div>
+
+    <div class="item-card">
+      <img src="https://i.ibb.co/gjC6DBW/image-removebg-preview.png" alt="Golden Vault Icon">
+      <div class="item-name">Golden Vault</div>
+      <div class="item-price">Price: 5,000 Crystals</div>
+      <button class="buy-btn" onclick="addToCart('Golden Vault', 5000)">Add to Cart</button>
+    </div>
+    
+        
+
+  </div>
+
+  <!-- Cart Button -->
+  <button class="cart-btn" onclick="toggleCart()">Cart</button>
+
+  <!-- Cart Popout -->
+  <div id="cart">
+    <h2>Your Cart</h2>
+    <div id="cart-items" class="receipt"></div>
+    <div class="cart-buttons">
+      <button class="copy-btn" onclick="copyReceipt()">Copy Receipt</button>
+      <button class="download-btn" onclick="downloadReceipt()">Download Receipt</button>
+    </div>
+  </div>
+
+  <script>
+    let cartItems = [];
+    let cartVisible = false;
+
+    function addToCart(name, price) {
+      cartItems.push({ name, price });
+      updateCart();
+    }
+
+    function updateCart() {
+      const cartItemsContainer = document.getElementById('cart-items');
+      cartItemsContainer.innerHTML = '';
+
+      cartItems.forEach(item => {
+        const itemElement = document.createElement('p');
+        itemElement.textContent = ${item.name} - ${item.price} Crystals;
+        cartItemsContainer.appendChild(itemElement);
+      });
+    }
+
+    function toggleCart() {
+      const cartElement = document.getElementById('cart');
+      if (cartVisible) {
+        cartElement.style.right = '-400px'; // Hide cart
+      } else {
+        cartElement.style.right = '20px'; // Show cart
+        cartElement.classList.add('show-cart');
+      }
+      cartVisible = !cartVisible;
+    }
+
+    function copyReceipt() {
+      let receiptText = 'Receipt:\n';
+      cartItems.forEach(item => {
+        receiptText += ${item.name} - ${item.price} Crystals\n;
+      });
+
+      // Copy the receipt to clipboard
+      navigator.clipboard.writeText(receiptText).then(() => {
+        alert('Receipt copied to clipboard!');
+      });
+    }
+
+    function downloadReceipt() {
+      let receiptText = 'Receipt:\n';
+      cartItems.forEach(item => {
+        receiptText += ${item.name} - ${item.price} Crystals\n;
+      });
+
+      const blob = new Blob([receiptText], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'receipt.txt';
+      link.click();
+    }
+  </script>
+
+</body>
+</html>
